@@ -12,7 +12,6 @@ numeric = set(numeric)
 
 @main.route('/')
 def index():
-    return 'hello, world'
     auth = request.authorization
     if not auth:
         return jsonify({'message':'Permissão negada.'}),401
