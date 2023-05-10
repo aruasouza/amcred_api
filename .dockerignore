@@ -1,0 +1,5 @@
+venv
+__pycache__
+activate_venv.txt
+test.py
+.gitignore
