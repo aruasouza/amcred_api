@@ -1,4 +1,5 @@
 Flask
+gunicorn
 waitress
 xgboost
 numpy
