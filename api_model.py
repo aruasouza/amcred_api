@@ -10,6 +10,23 @@ nafill = json.load(open('nafill.json','r',encoding = 'utf-8'))
 model = XGBClassifier()
 model.load_model('model_load.json')
 
+def calc_renda(x,y):
+    if x == None:
+        if y == None:
+            return 0
+        return y
+    if y == None:
+        return x
+    return max(x,y)
+
+def valor_da_parcela(row):
+    taxa = row['taxaaomes']
+    vp = row['valoremprestado']
+    n = row['quantidadeparcelas']
+    if taxa == 0:
+        return vp / n
+    return vp * (taxa * ((1 + taxa) ** n)) / (((1 + taxa) ** n) - 1)
+
 def square(x,a,b,c):
     return ((x ** 2) * a) + (x * b) + c
 
@@ -17,6 +34,12 @@ corrector = lambda x: square(x,*popt)
 
 def calculate(data_dict):
     vector = []
+    rendafamiliarmensal = data_dict['rendafamiliarmensal'] if 'rendafamiliarmensal' in data_dict else None
+    totaldasreceitas = data_dict['totaldasreceitas'] if 'totaldasreceitas' in data_dict else None
+    data_dict['valorparcela'] = valor_da_parcela(data_dict)
+    renda = calc_renda(rendafamiliarmensal,totaldasreceitas)
+    data_dict['pesoparcela'] = data_dict['valorparcela'] / renda if renda > 0 else 1
+    data_dict['pesoparcela'] = data_dict['pesoparcela'] if data_dict['pesoparcela'] <= 1 else 1
     for atributo in atributos:
         if atributo not in data_dict:
             value = nafill[atributo]
