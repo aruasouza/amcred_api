@@ -17,7 +17,7 @@ def jsonify(data):
     json_str = json.dumps(data,ensure_ascii = False)
     return Response(json_str,content_type="application/json; charset=utf-8" )
 
-@main.route('/')
+@main.route('/',methods = ['POST'])
 def index():
     auth = request.authorization
     if not auth:
