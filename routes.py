@@ -1,15 +1,16 @@
 from flask import Blueprint, request, json, Response
 import json
 import numbers
+import gc
 from key import admin_pass
-from api_model import atributos,calculate
+import api_model
 
 main = Blueprint('main', __name__)
 
 permited = json.load(open('permited_values.json','r',encoding = 'utf-8'))
 numeric = set(json.load(open('numeric.json','r',encoding = 'utf-8')))
 mandatory = set(json.load(open('mandatory.json','r',encoding = 'utf-8')))
-atributos = atributos.copy()
+atributos = api_model.atributos.copy()
 atributos.remove('valorparcela')
 atributos.remove('pesoparcela')
 
@@ -44,4 +45,4 @@ def index():
     if valores_negados or dados or valores_faltantes:
         return jsonify({'message':'Há erros no envio das informações.',
                         'errors':{'atributos negados':list(dados.keys()),'valores negados':valores_negados,'atributos obrigatórios ausentes':valores_faltantes}}),400
-    return jsonify({'probabilidade':calculate(data_dict)}),200
+    return jsonify({'probabilidade':api_model.calculate(data_dict)}),200

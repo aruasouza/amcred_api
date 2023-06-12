@@ -1,14 +1,16 @@
 from xgboost import XGBClassifier
 import numpy as np
 import json
+from keras.models import load_model
 
 catdict = json.load(open('categories.json','r',encoding = 'utf-8'))
 normalize_dict = json.load(open('normalization.json','r',encoding = 'utf-8'))
 popt = json.load(open('coef.json','r'))
 atributos = json.load(open('ordem_atributos.json','r',encoding = 'utf-8'))
 nafill = json.load(open('nafill.json','r',encoding = 'utf-8'))
-model = XGBClassifier()
-model.load_model('model_load.json')
+model_xgb = XGBClassifier()
+model_xgb.load_model('model_load.json')
+model_deep = load_model('model_DeepV2.h5')
 
 def calc_renda(x,y):
     if x == None:
@@ -33,6 +35,7 @@ def square(x,a,b,c):
 corrector = lambda x: square(x,*popt)
 
 def calculate(data_dict):
+    weight = .87
     vector = []
     rendafamiliarmensal = data_dict['rendafamiliarmensal'] if 'rendafamiliarmensal' in data_dict else None
     totaldasreceitas = data_dict['totaldasreceitas'] if 'totaldasreceitas' in data_dict else None
@@ -50,5 +53,6 @@ def calculate(data_dict):
         value = (value - normalize_dict[atributo]['mean']) / normalize_dict[atributo]['std']
         vector.append(value)
     vector = np.array([vector])
-    pred = model.predict_proba(vector)[0,1]
-    return corrector(pred)
+    pred_xgb = corrector(model_xgb.predict_proba(vector)[0,1])
+    pred_deep = model_deep(vector).numpy()[0][0]
+    return (pred_deep * weight) + (pred_xgb * (1 - weight))

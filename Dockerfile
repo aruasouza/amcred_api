@@ -1,4 +1,4 @@
-FROM python:3.11.3-slim-buster
+FROM python:3.11.4-slim-buster
 
 COPY ./requirements.txt /app/requirements.txt
 
@@ -10,7 +10,7 @@ RUN pip install -r requirements.txt
 
 COPY . .
 
-EXPOSE 5000
+EXPOSE 8080
 
 ENTRYPOINT [ "python" ]
 

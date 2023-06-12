@@ -4,3 +4,5 @@ waitress
 xgboost
 numpy
 scikit-learn
+tensorflow
+keras
