@@ -11,5 +11,5 @@ def create_app():
 app = create_app()
 
 if __name__ == '__main__':
-    serve(app,host='0.0.0.0', port=8080)
+    serve(app,host='0.0.0.0', port=8070)
     # app.run(host='0.0.0.0', port=8080, debug = False)

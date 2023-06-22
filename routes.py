@@ -32,16 +32,25 @@ def index():
     valores_negados = {}
     valores_faltantes = []
     for atributo in atributos:
-        if atributo in dados:
-            if (atributo in numeric) and isinstance(dados[atributo],numbers.Number):
-                data_dict[atributo] = dados.pop(atributo)
-            elif dados[atributo] in permited[atributo]:
-                data_dict[atributo] = dados.pop(atributo)
-            else:
+        isindados = atributo in dados
+        isnumeric = atributo in numeric
+        ismandatory = atributo in mandatory
+        if not isindados:
+            dados[atributo] = None
+        valor = dados[atributo]
+        isnone = valor is None
+        if isnone and ismandatory:
+            valores_faltantes.append(atributo)
+            dados.pop(atributo)
+            continue
+        if isnumeric and not isnone and not isinstance(valor,numbers.Number):
+            valores_negados[atributo] = dados.pop(atributo)
+            continue
+        if not isnumeric and not isnone:
+            if valor not in permited[atributo]:
                 valores_negados[atributo] = dados.pop(atributo)
-        else:
-            if atributo in mandatory:
-                valores_faltantes.append(atributo)
+                continue
+        data_dict[atributo] = dados.pop(atributo)
     if valores_negados or dados or valores_faltantes:
         return jsonify({'message':'Há erros no envio das informações.',
                         'errors':{'atributos negados':list(dados.keys()),'valores negados':valores_negados,'atributos obrigatórios ausentes':valores_faltantes}}),400

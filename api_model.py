@@ -44,7 +44,7 @@ def calculate(data_dict):
     data_dict['pesoparcela'] = data_dict['valorparcela'] / renda if renda > 0 else 1
     data_dict['pesoparcela'] = data_dict['pesoparcela'] if data_dict['pesoparcela'] <= 1 else 1
     for atributo in atributos:
-        if atributo not in data_dict:
+        if data_dict[atributo] is None:
             value = nafill[atributo]
         else:
             value = data_dict[atributo]
