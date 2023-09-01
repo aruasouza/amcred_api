@@ -11,6 +11,13 @@ nafill = json.load(open('nafill.json','r',encoding = 'utf-8'))
 model_xgb = XGBClassifier()
 model_xgb.load_model('model_load.json')
 model_deep = load_model('model_DeepV2.h5')
+with open('anti_bs','r') as f:
+    anti_bs = f.read().split()
+    a,b = float(anti_bs[0]),float(anti_bs[1])
+ppindice = atributos.index('pesoparcela')
+
+def pol3(x):
+    return ((x + b) ** 3) * a
 
 def calc_renda(x,y):
     if x == None:
@@ -24,7 +31,7 @@ def calc_renda(x,y):
 def valor_da_parcela(row):
     taxa = row['taxaaomes']
     vp = row['valoremprestado']
-    n = row['quantidadeparcelas']
+    n = max(row['quantidadeparcelas'],1)
     if taxa == 0:
         return vp / n
     return vp * (taxa * ((1 + taxa) ** n)) / (((1 + taxa) ** n) - 1)
@@ -55,4 +62,4 @@ def calculate(data_dict):
     vector = np.array([vector])
     pred_xgb = corrector(model_xgb.predict_proba(vector)[0,1])
     pred_deep = model_deep(vector).numpy()[0][0]
-    return (pred_deep * weight) + (pred_xgb * (1 - weight))
+    return min((pred_deep * weight) + (pred_xgb * (1 - weight)) + pol3(vector[0,ppindice]),0.99)

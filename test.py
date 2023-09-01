@@ -1,7 +1,7 @@
 import requests
 
-url = 'http://127.0.0.1:8070'
-secret = open('admin_pass','r').read()
+url = 'http://192.168.100.3:8070'
+secret = open('app_simples/admin_pass','r').read()
 
 req = requests.post(url,auth = ('deepen',secret),json = {'situacaodoimovelderesidencia':'Cedida',
                                                         'situacaoimoveldeatividade':'Alugada',
@@ -9,12 +9,12 @@ req = requests.post(url,auth = ('deepen',secret),json = {'situacaodoimovelderesi
                                                         'formacaoescolar':'Sem Instrução',
                                                         'constituicao':'M.E.I.',
                                                         'finalidadeemprestimo':'Giro',
-                                                        'taxaaomes':0.15,
-                                                        'valoremprestado':10000000,
+                                                        'taxaaomes':0.1,
+                                                        'valoremprestado':1000000,
                                                         'quantidadeparcelas':10,
-                                                        'totaldasreceitas':None,
-                                                        'rendafamiliarmensal':None,
-                                                        'conceitospc':None
+                                                        'totaldasreceitas':100,
+                                                        'rendafamiliarmensal':20000,
+                                                        'conceitospc':'A'
                                                         })
 print(req)
 print(req.json())

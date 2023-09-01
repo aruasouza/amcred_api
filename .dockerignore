@@ -3,3 +3,5 @@ __pycache__
 activate_venv.txt
 test.py
 .gitignore
+debug.py
+.git
